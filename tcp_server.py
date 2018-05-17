@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 # see => https://qiita.com/msrks/items/0550603efc59f6e8ba09
 import socket
 from datetime import datetime
@@ -12,7 +14,7 @@ while True:
     print('listening...')
     s.listen(5)
     c, addr = s.accept()
-    print('receiving from ...')
+    #print('receiving from ...')
     print("received ", c.recv(4096))
     while True:
         now = datetime.now().strftime("%Y/%m/%d %H:%M:%S")

@@ -1,4 +1,5 @@
-# conding: UTF-8
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 # 参考URL: socket => https://qiita.com/msrks/items/0550603efc59f6e8ba09
 # 参考URL: logging => https://stackoverflow.com/questions/6386698/using-the-logging-python-class-to-write-to-a-file
 import socket
@@ -7,6 +8,25 @@ import sys
 import signal
 import logging
 import re
+
+# ファイル1行目の文字列を取得し、ファイルから削除する
+def get_and_clear_line1():
+    read_file = 'send_msg.txt'
+    write_file = 'new_send_msg.txt' # for debug
+    # write_file = read_file
+
+    # ファイル内容を読み込む
+    file = open(read_file)
+    lines = file.readlines()
+    file.close()
+
+    # ファイル内容を書き出す。1行目だけは削除する。
+    with open(write_file, 'w', encoding = 'utf-8') as myfile:
+        line1 = lines[0]
+        print('line1:', line1)
+        lines[0] = '\n'
+        myfile.write(''.join(lines))
+    return line1.rstrip()
 
 # 接続先(TCPサーバ)
 host = sys.argv[1]
@@ -26,7 +46,7 @@ s = socket.socket()
 s.connect((host, port))
 # TODO 不要
 init_msg = "hi"
-#s.send(bytes(init_msg, encoding='utf-8'))
+s.send(bytes(init_msg, encoding='utf-8'))
 logging.info("send: %s" % (init_msg))
 
 try:
@@ -40,13 +60,15 @@ try:
         logging.info("%s: %s" % ("recv", recvstr))
 
         # 受信した時刻の秒数が偶数か奇数かにより、返信するメッセージを変更
-        m = re.match(r'\d{4}/\d{2}/\d{2} \d{2}:\d{2}:(?P<sec>\d{2})', recvstr)
-        sec = int(m.group('sec'))
-        if (sec % 2)  == 0:
-            sendstr = str(sec) + " is even."
-        else:
-            sendstr = str(sec) + " is odd."
-        # TODO 送信する文字列を、ファイルから取得する
+        #m = re.match(r'\d{4}/\d{2}/\d{2} \d{2}:\d{2}:(?P<sec>\d{2})', recvstr)
+        #sec = int(m.group('sec'))
+        #if (sec % 2)  == 0:
+        #    sendstr = str(sec) + " is even."
+        #else:
+        #    sendstr = str(sec) + " is odd."
+        # 送信する文字列を、ファイルから取得する
+        sendstr = get_and_clear_line1()
+        # TODO sendstrが空文字なら送信しない
 
         # メッセージ送信
         sendbin = bytes(sendstr, encoding='utf-8')

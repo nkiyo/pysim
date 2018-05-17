@@ -1,0 +1,6 @@
+
+====== write text to send at line1. =====
+Hello World!!
+hoge@gmail.com
+msg=hoge,req=xxxx,id=999
+
